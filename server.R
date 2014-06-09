@@ -34,7 +34,7 @@ shinyServer(function(input, output) {
                        Spearman = "spearman",
                        Kendall = "kendall")
             
-        round(cor(cbind(x), method = type),3)
+        round(cor(cbind(x), method = type, use = "complete"),3)
     })
     
     
@@ -256,8 +256,8 @@ shinyServer(function(input, output) {
             means <- means[,-1]
             
             minmax <- unlist(means)
-            minimum <- min(minmax)
-            maximum <- max(minmax)
+            minimum <- min(minmax, na.rm = TRUE)
+            maximum <- max(minmax, na.rm = TRUE)
             
             lbls <- c()
             for (i in 1:nclust) {
