@@ -1,28 +1,53 @@
-
-
 library(shiny)
+library(shinyAce)
 
-shinyUI(pageWithSidebar(
+
+shinyUI(bootstrapPage(
+
 
     headerPanel("Cluster Analysis"),
+
+
+########## Adding loading message #########
+
+tags$head(tags$style(type="text/css", "
+#loadmessage {
+position: fixed;
+top: 0px;
+left: 0px;
+width: 100%;
+padding: 10px 0px 10px 0px;
+text-align: center;
+font-weight: bold;
+font-size: 100%;
+color: #000000;
+background-color: #CCFF66;
+z-index: 105;
+}
+")),
+
+conditionalPanel(condition="$('html').hasClass('shiny-busy')",
+tags$div("Loading...",id="loadmessage")),
+
+#-----------------------------------------#
 
     sidebarPanel(
 
     strong("Scores:"),
 
-    checkboxInput("stdz", label = strong("Standardized scores will be used."), value = T),
+    checkboxInput("stdz", label = strong("Standardized"), value = T),
 
     br(),
 
     radioButtons("type", strong("Clustering:"),
             list("Cases" = "case",
-                 "Variables" = "variable"), 'Cases'),
+                 "Variables" = "variable"), selected = "case"),
 
     br(),
 
     radioButtons("linkage", strong("Linkage method:"),
         list("ward" = "ward", "single" = "single", "complete" = "complete", "average" = "average",
-             "mcquitty" = "mcquitty", "median" = "median", "centroid" = "centroid"), 'ward'),
+             "mcquitty" = "mcquitty", "median" = "median", "centroid" = "centroid"), selected = "ward"),
 
     br(),
 
@@ -30,7 +55,7 @@ shinyUI(pageWithSidebar(
         list("squared euclidean" = "squared.euclidean", "euclidean"="euclidean", "maximum"="maximum",
              "manhattan"="manhattan", "canberra"="canberra", "binary"="binary", "pearson"="pearson",
              "abspearson"="abspearson", "correlation"="correlation", "abscorrelation"="abscorrelation",
-             "spearman"="spearman", "kendall"="kendall"),'squared euclidean')
+             "spearman"="spearman", "kendall"="kendall"),selected = "squared.euclidean")
     ),
 
     mainPanel(
@@ -68,7 +93,7 @@ shinyUI(pageWithSidebar(
 
             strong("Scatter plot matrices"),
             br(),
-            downloadButton('downloadCorPlot', 'Download the plot as pdf'),
+
             plotOutput("corPlot"),
 
             br(),
@@ -77,7 +102,7 @@ shinyUI(pageWithSidebar(
             h3("Cluster analysis"),
 
             verbatimTextOutput("clusteranalysis.out"),
-            downloadButton('downloadClusterPlot', 'Download the plot as pdf'),
+
             plotOutput("clusterPlot"),
 
             h3("Specifying the number of clusters"),
@@ -87,8 +112,6 @@ shinyUI(pageWithSidebar(
             br(),
             br(),
 
-            downloadButton('downloadSpecClusterPlot', 'Download the plot as pdf'),
-
             plotOutput("specPlot"),
 
             strong("Basic statistics of each cluster (Applicable only for case clustering)"),
@@ -97,7 +120,7 @@ shinyUI(pageWithSidebar(
             br(),
             strong("Profile plot (Applicable only for case clustering)"),
             br(),
-            downloadButton('downloadProfilePlot', 'Download the plot as pdf'),
+
             plotOutput("profilePlot", height = "600px", width="80%"),
 
             br(),

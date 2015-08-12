@@ -73,8 +73,8 @@ shinyServer(function(input, output) {
         if (input$stdz == 0) { # 標準化なし
             
             if (input$rowname == 1) {
-                x <- read.csv(text=input$text, sep="\t")
-                x <- x[, -1]
+                dat <- read.csv(text=input$text, sep="\t")
+                x <- dat[, -1]
             } else {
                 x <- read.csv(text=input$text, sep="\t")
             }
@@ -82,6 +82,8 @@ shinyServer(function(input, output) {
                 if (input$type == "case") { # ケースクラスターと変数クラスターの違い
                     z <- as.matrix(x)
                     z <- data.frame(z)
+                    rownames(z) <- dat[,1]
+                    
                 } else {
                     z <- as.matrix(x)
                     z <- data.frame(z)
@@ -113,8 +115,8 @@ shinyServer(function(input, output) {
         } else { # 標準化あり
             
             if (input$rowname == 1) {
-                x <- read.csv(text=input$text, sep="\t")
-                x <- x[, -1]
+                dat <- read.csv(text=input$text, sep="\t")
+                x <- dat[, -1]
             }else{
                 x <- read.csv(text=input$text, sep="\t")
             }
@@ -123,6 +125,8 @@ shinyServer(function(input, output) {
                     x <- as.matrix(x)
                     z <- scale(x) # ここで標準化
                     z <- data.frame(z)
+                    rownames(z) <- dat[,1]
+
                 } else {
                     x <- as.matrix(x)
                     z <- scale(x) # ここで標準化
@@ -325,53 +329,4 @@ shinyServer(function(input, output) {
         specifiedCluster()
     })
     
-    output$downloadCorPlot <- downloadHandler(
-    filename = function() {
-        paste('Corplot-', Sys.Date(), '.pdf', sep='')
-    },
-    content = function(FILE=NULL) {
-        pdf(file=FILE)
-		print(makecorPlot())
-		dev.off()
-	}
-    )
-    
-    output$downloadClusterPlot <- downloadHandler(
-    filename = function() {
-        paste('ClusterPlot-', Sys.Date(), '.pdf', sep='')
-    },
-    content = function(FILE=NULL) {
-        pdf(file=FILE)
-		print(makeclusterPlot())
-		dev.off()
-	}
-    )
-    
-    output$downloadSpecClusterPlot <- downloadHandler(
-    filename = function() {
-        paste('SpecClusterPlot-', Sys.Date(), '.pdf', sep='')
-    },
-    content = function(FILE=NULL) {
-        pdf(file=FILE)
-		print(makespecPlot())
-		dev.off()
-	}
-    )
-
-    output$downloadProfilePlot <- downloadHandler(
-    filename = function() {
-        paste('ProfilePlot-', Sys.Date(), '.pdf', sep='')
-    },
-    content = function(FILE=NULL) {
-        pdf(file=FILE)
-        print(makeProfilePlot())
-        dev.off()
-    }
-    )
-
-
-
-
-
-
 })
